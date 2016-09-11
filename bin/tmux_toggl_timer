@@ -1,0 +1,35 @@
+#!/usr/bin/ruby
+
+require 'optparse'
+require 'tmux_toggl_timer/toggl_fetcher'
+require 'tmux_toggl_timer/timer'
+
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = 'Usage: tmux_toggl_timer [options]'
+
+  opts.on('-t', '--token API TOKEN', 'API TOKEN') do |v|
+    options[:api_token] = v
+  end
+  opts.on('-u', '--uid USER ID', 'User ID') do |v|
+    options[:user_id] = v
+  end
+  opts.on('-w', '--workspace WORKSPACE ID', 'WORKSPACE ID') do |v|
+    options[:workspace_id] = v
+  end
+end.parse!
+
+url = 'https://www.toggl.com'
+user_agent = 'tmux_toggle_timer'
+
+fetcher = TmuxTogglTimer::TogglFetcher.new(
+  url: url,
+  api_token: options[:api_token],
+  user_agent: user_agent,
+  user_id: options[:user_id]
+)
+
+timer = TmuxTogglTimer::Timer.new(fetcher, options[:workspace_id])
+
+puts timer.output
